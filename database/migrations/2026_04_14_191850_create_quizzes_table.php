@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('users', function (Blueprint $table) {
+       Schema::create('quizzes', function (Blueprint $table) {
     $table->id();
-    $table->string('name');
-    $table->string('email')->unique();
-    $table->string('password');
-    $table->enum('role', ['admin', 'student'])->default('student');
+    $table->string('title');
+    $table->text('description')->nullable();
+    $table->integer('duration'); // دقیقه
+    $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+    $table->boolean('is_published')->default(false);
     $table->timestamps();
 });
-
     }
 
     /**
@@ -27,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('quizzes');
     }
 };
