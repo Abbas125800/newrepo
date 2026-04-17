@@ -15,7 +15,7 @@ return new class extends Migration
     $table->id();
     $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
     $table->text('question_text');
-    $table->enum('type', ['mcq', 'true_false'])->default('mcq');
+    $table->enum('type', ['mcq', 'true_false', 'short_answer'])->default('mcq');
     $table->timestamps();
 });
     }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Options extends Model
@@ -15,13 +17,20 @@ class Options extends Model
         'is_correct',
     ];
 
-    public function question()
+    protected function casts(): array
     {
-        return $this->belongsTo(Questions::class);
+        return [
+            'is_correct' => 'boolean',
+        ];
     }
 
-    public function answers()
+    public function question(): BelongsTo
     {
-        return $this->hasMany(Answers::class);
+        return $this->belongsTo(Questions::class, 'question_id');
+    }
+
+    public function answers(): HasMany
+    {
+        return $this->hasMany(Answers::class, 'option_id');
     }
 }

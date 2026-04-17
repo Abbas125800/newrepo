@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Quizzes;
 
 class User extends Authenticatable
 {
@@ -17,6 +17,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'approved_at',
+        'approved_by',
     ];
 
     protected $hidden = [
@@ -24,13 +26,42 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function quizzes()
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'approved_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    public function quizzes(): HasMany
     {
         return $this->hasMany(Quizzes::class, 'created_by');
     }
 
-    public function attempts()
+    public function attempts(): HasMany
     {
         return $this->hasMany(Attempts::class);
+    }
+
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function isTeacher(): bool
+    {
+        return $this->role === 'teacher';
+    }
+
+    public function isStudent(): bool
+    {
+        return $this->role === 'student';
+    }
+
+    public function isApprovedStudent(): bool
+    {
+        return $this->role !== 'student' || $this->approved_at !== null;
     }
 }

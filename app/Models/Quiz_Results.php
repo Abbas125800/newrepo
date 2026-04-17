@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Quiz_Results extends Model
-
 {
     use HasFactory;
+
+    protected $table = 'quiz_results';
 
     protected $fillable = [
         'attempt_id',
@@ -18,8 +20,8 @@ class Quiz_Results extends Model
         'percentage',
     ];
 
-    public function attempt()
+    public function attempt(): BelongsTo
     {
-        return $this->belongsTo(Attempts::class);
+        return $this->belongsTo(Attempts::class, 'attempt_id');
     }
 }
